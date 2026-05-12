@@ -28,7 +28,7 @@ export default function DiscoverPage() {
   const [activeCategory, setActiveCategory] = useState("全部榜单");
   const [activeLocation, setActiveLocation] = useState("全部地点");
   const [activeAudience, setActiveAudience] = useState("全部受众");
-  const [activeStatus, setActiveStatus] = useState("all");
+  const [activeStatus, setActiveStatus] = useState("recruiting");
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
