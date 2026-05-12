@@ -21,7 +21,7 @@ export default function FaqPage() {
   const [openFaq, setOpenFaq] = useState<string | null>(null);
 
   useEffect(() => {
-    setFaqs(faqDb.getFaqs());
+    faqDb.getFaqs().then(setFaqs);
   }, []);
 
   const filtered =

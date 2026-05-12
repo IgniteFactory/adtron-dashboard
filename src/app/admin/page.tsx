@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Users, FileText, Activity, AlertCircle, Edit, Trash2, CheckSquare } from "lucide-react";
+import { Users, FileText, Activity, AlertCircle, Edit, Trash2, CheckSquare, BarChart2 } from "lucide-react";
 import Link from "next/link";
 import { supabaseDb } from "@/lib/supabaseDb";
 import { Campaign } from "@/lib/mockDb";
@@ -173,7 +173,16 @@ export default function AdminDashboard() {
                       </select>
                     </td>
                     <td className="p-6 text-right">
-                      <div className="flex justify-end gap-3">
+                      <div className="flex justify-end gap-2">
+                        {(camp.status === 'full' || camp.status === 'active' || camp.status === 'completed') && (
+                          <Link
+                            href={`/admin/report/${camp.id}`}
+                            title="活动报告"
+                            className="p-2 text-text-secondary hover:text-brand bg-white/5 hover:bg-brand/10 rounded-lg transition-colors"
+                          >
+                            <BarChart2 className="w-4 h-4" />
+                          </Link>
+                        )}
                         <Link href={`/admin/edit/${camp.id}`} className="p-2 text-text-secondary hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors">
                           <Edit className="w-4 h-4" />
                         </Link>

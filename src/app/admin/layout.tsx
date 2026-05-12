@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Command, LayoutDashboard, PlusCircle, Users, Settings, LogOut, Lock } from "lucide-react";
+import { Command, LayoutDashboard, PlusCircle, Users, Settings, LogOut, Lock, FileText } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export default function AdminLayout({
@@ -21,6 +21,7 @@ export default function AdminLayout({
     { name: "发布新榜单", href: "/admin/create", icon: PlusCircle },
     { name: "已完成榜单活动", href: "/admin/completed", icon: LayoutDashboard },
     { name: "商家线索管理", href: "/admin/leads", icon: Users },
+    { name: "落地页内容", href: "/admin/content", icon: FileText },
     { name: "系统设置", href: "/admin/settings", icon: Settings },
   ];
 
@@ -101,7 +102,7 @@ export default function AdminLayout({
 
         <nav className="flex-1 py-8 px-4 space-y-2">
           {navItems.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href);
             const Icon = item.icon;
             
             return (

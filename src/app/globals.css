@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand: #c6f824;
+  --color-brand: #E8322A;
   --color-bg-main: #18191d;
   --color-bg-sidebar: #22232a;
   --color-bg-surface: #27282f;
@@ -17,6 +17,28 @@ body {
   background-color: var(--color-bg-main);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
+}
+
+/* ── Print / PDF export ── */
+@media print {
+  .no-print { display: none !important; }
+
+  @page {
+    margin: 12mm 14mm;
+    size: A4 portrait;
+  }
+
+  body {
+    background: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Cards must never be sliced mid-content */
+  .print-card { break-inside: avoid !important; }
+
+  /* Each report section starts cleanly; breaking between rows is fine */
+  .report-section { break-before: auto; orphans: 3; widows: 3; }
 }
 
 /* Custom Webkit Scrollbar for dark theme */

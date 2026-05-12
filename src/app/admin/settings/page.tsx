@@ -19,12 +19,14 @@ export default function SettingsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    setFaqs(faqDb.getFaqs());
-  }, []);
+  const reload = async () => {
+    const data = await faqDb.getFaqs();
+    setFaqs(data);
+  };
 
-  const reload = () => setFaqs(faqDb.getFaqs());
+  useEffect(() => { reload(); }, []);
 
   const openCreate = () => {
     setForm(EMPTY_FORM);
@@ -43,26 +45,39 @@ export default function SettingsPage() {
     setIsFormOpen(true);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!form.question.trim() || !form.answer.trim()) return;
-    if (editingId) {
-      faqDb.updateFaq(editingId, form);
-    } else {
-      faqDb.addFaq(form);
+    setSaving(true);
+    try {
+      if (editingId) {
+        await faqDb.updateFaq(editingId, form);
+      } else {
+        await faqDb.addFaq(form);
+      }
+      await reload();
+      setIsFormOpen(false);
+    } catch (err) {
+      console.error(err);
+      alert("保存失败，请重试");
+    } finally {
+      setSaving(false);
     }
-    reload();
-    setIsFormOpen(false);
   };
 
-  const handleDelete = (id: string) => {
-    faqDb.deleteFaq(id);
-    reload();
-    setDeleteConfirm(null);
+  const handleDelete = async (id: string) => {
+    try {
+      await faqDb.deleteFaq(id);
+      await reload();
+      setDeleteConfirm(null);
+    } catch (err) {
+      console.error(err);
+      alert("删除失败，请重试");
+    }
   };
 
-  const toggleDisplay = (faq: FAQ) => {
-    faqDb.updateFaq(faq.id, { displayStatus: !faq.displayStatus });
-    reload();
+  const toggleDisplay = async (faq: FAQ) => {
+    await faqDb.updateFaq(faq.id, { displayStatus: !faq.displayStatus });
+    await reload();
   };
 
   const filtered =
@@ -75,12 +90,12 @@ export default function SettingsPage() {
       {/* Page header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">系统设置</h1>
-          <p className="text-text-secondary">管理常见问题（FAQ）内容与展示状态。</p>
+          <h1 className="text-3xl font-bold text-white mb-2">FAQ 管理</h1>
+          <p className="text-text-secondary">管理常见问题内容与公开展示状态。数据存储于 Supabase。</p>
         </div>
         <button
           onClick={openCreate}
-          className="inline-flex items-center gap-2 h-10 px-5 rounded-xl bg-brand text-bg-main font-bold text-sm hover:scale-[1.03] active:scale-[0.97] transition-all shadow-[0_0_20px_rgba(198,248,36,0.2)] cursor-pointer"
+          className="inline-flex items-center gap-2 h-10 px-5 rounded-xl bg-brand text-white font-bold text-sm hover:scale-[1.03] active:scale-[0.97] transition-all shadow-[0_0_20px_rgba(232,50,42,0.2)] cursor-pointer"
         >
           <Plus className="w-4 h-4" strokeWidth={2.5} />
           新增问题
@@ -91,7 +106,7 @@ export default function SettingsPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { label: "全部问题", value: faqs.length },
-          { label: "已展示（详情页）", value: displayCount },
+          { label: "已公开展示", value: displayCount },
           ...FAQ_CATEGORIES.slice(0, 2).map((c) => ({
             label: c,
             value: faqs.filter((f) => f.category === c).length,
@@ -112,7 +127,7 @@ export default function SettingsPage() {
             onClick={() => setFilterCat(cat)}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all cursor-pointer ${
               filterCat === cat
-                ? "bg-brand text-bg-main"
+                ? "bg-brand text-white"
                 : "bg-white/5 text-text-secondary hover:bg-white/10 hover:text-white"
             }`}
           >
@@ -280,7 +295,7 @@ export default function SettingsPage() {
                         onClick={() => setForm({ ...form, category: cat })}
                         className={`px-4 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                           form.category === cat
-                            ? "bg-brand text-bg-main"
+                            ? "bg-brand text-white"
                             : "bg-white/5 text-text-secondary hover:bg-white/10 hover:text-white"
                         }`}
                       >
@@ -293,8 +308,8 @@ export default function SettingsPage() {
                 {/* Display Status */}
                 <div className="flex items-center justify-between p-4 bg-bg-main rounded-xl border border-white/[0.07]">
                   <div>
-                    <p className="text-white font-medium text-sm">展示于活动详情页</p>
-                    <p className="text-text-secondary text-xs mt-0.5">开启后，此问题将显示在每个活动详情页底部</p>
+                    <p className="text-white font-medium text-sm">公开展示</p>
+                    <p className="text-text-secondary text-xs mt-0.5">开启后，此问题将显示在落地页和活动详情页</p>
                   </div>
                   <button
                     type="button"
@@ -323,10 +338,10 @@ export default function SettingsPage() {
                   <button
                     type="button"
                     onClick={handleSubmit}
-                    disabled={!form.question.trim() || !form.answer.trim()}
-                    className="flex-1 h-11 rounded-xl bg-brand text-bg-main text-sm font-bold hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:scale-100 cursor-pointer"
+                    disabled={!form.question.trim() || !form.answer.trim() || saving}
+                    className="flex-1 h-11 rounded-xl bg-brand text-white text-sm font-bold hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:scale-100 cursor-pointer"
                   >
-                    {editingId ? "保存修改" : "新增问题"}
+                    {saving ? "保存中…" : editingId ? "保存修改" : "新增问题"}
                   </button>
                 </div>
               </div>

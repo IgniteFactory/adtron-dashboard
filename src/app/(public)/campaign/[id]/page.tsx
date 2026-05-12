@@ -40,7 +40,7 @@ export default function CampaignDetail() {
       setCurrentUser(supabaseDb.getCurrentMerchant());
       setLoading(false);
     });
-    setDisplayFaqs(faqDb.getFaqsForDisplay());
+    faqDb.getFaqsForDisplay().then(setDisplayFaqs);
     setTitleExamples(titleExamplesDb.get(id));
   }, [id]);
 

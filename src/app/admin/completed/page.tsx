@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabaseDb } from "@/lib/supabaseDb";
 import { Campaign } from "@/lib/mockDb";
-import { CheckSquare, Calendar, Filter, PieChart as PieChartIcon, Activity } from "lucide-react";
+import { CheckSquare, Calendar, Filter, PieChart as PieChartIcon, Activity, BarChart2 } from "lucide-react";
 import Link from "next/link";
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -183,6 +183,7 @@ export default function CompletedPage() {
               <th className="p-6 font-medium">类目</th>
               <th className="p-6 font-medium">最终收官进度</th>
               <th className="p-6 font-medium">结案时间</th>
+              <th className="p-6 font-medium text-right">操作</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
@@ -214,12 +215,21 @@ export default function CompletedPage() {
                          {new Date(camp.completedAt || camp.createdAt).toLocaleDateString()}
                       </div>
                     </td>
+                    <td className="p-6 text-right">
+                      <Link
+                        href={`/admin/report/${camp.id}`}
+                        title="查看报告"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-brand bg-brand/10 hover:bg-brand/20 border border-brand/20 transition-colors"
+                      >
+                        <BarChart2 className="w-3.5 h-3.5" /> 活动报告
+                      </Link>
+                    </td>
                   </tr>
                 );
              })}
             {filteredCampaigns.length === 0 && (
                <tr>
-                  <td colSpan={4} className="p-10 text-center text-text-secondary">当前时间范围内没有找到历史结案榜单。</td>
+                  <td colSpan={5} className="p-10 text-center text-text-secondary">当前时间范围内没有找到历史结案榜单。</td>
                </tr>
             )}
           </tbody>

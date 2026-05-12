@@ -29,7 +29,7 @@ export default function Header() {
         {/* Left: Logo & Nav */}
         <div className="flex items-center gap-10">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-xl bg-brand text-bg-main flex items-center justify-center font-bold shadow-[0_0_20px_rgba(198,248,36,0.3)] transition-transform group-hover:scale-105">
+            <div className="w-10 h-10 rounded-xl bg-brand text-white flex items-center justify-center font-bold shadow-[0_0_20px_rgba(232,50,42,0.3)] transition-transform group-hover:scale-105">
               <Command className="w-6 h-6" />
             </div>
             <span className="text-xl font-bold tracking-tight text-white hidden sm:block">
@@ -75,7 +75,7 @@ export default function Header() {
               </Link>
               <Link 
                 href="/discover"
-                className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand text-bg-main text-sm font-bold shadow-[0_0_15px_rgba(198,248,36,0.3)] hover:shadow-[0_0_25px_rgba(198,248,36,0.5)] transition-all hover:scale-105"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand text-white text-sm font-bold shadow-[0_0_15px_rgba(232,50,42,0.3)] hover:shadow-[0_0_25px_rgba(232,50,42,0.5)] transition-all hover:scale-105"
               >
                 入驻抢位
               </Link>
