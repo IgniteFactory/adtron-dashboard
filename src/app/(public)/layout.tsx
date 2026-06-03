@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Header from "@/components/Header";
+import WhatsAppWidget from "@/components/WhatsAppWidget";
 
 export default function PublicLayout({
   children,
@@ -21,6 +22,8 @@ export default function PublicLayout({
           {children}
         </div>
       )}
+      <WhatsAppWidget />
     </>
   );
 }
+
